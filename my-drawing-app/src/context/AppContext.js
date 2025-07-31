@@ -4,11 +4,10 @@ export const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
     const [drawingName, setDrawingName] = useState('Untitled Drawing');
-    const [selectedShapeTool, setSelectedShapeTool] = useState(null);
     const [shapesOnCanvas, setShapesOnCanvas] = useState([]);
+    const [selectedShapeTool, setSelectedShapeTool] = useState(null);
+    const [currentUser, setCurrentUser] = useState(null); // ADDED: State for the logged-in user
 
-
-    const CURRENT_USER_ID = 1;
     const API_BASE_URL = 'http://localhost:8080/api';
 
     const shapeCounts = useMemo(() => {
@@ -23,24 +22,14 @@ export const AppProvider = ({ children }) => {
 
     const addShapeToCanvasOnClick = useCallback((x, y) => {
         if (selectedShapeTool) {
-            const newShape = {
-                id: `${selectedShapeTool}-${Date.now()}`,
-                type: selectedShapeTool,
-                x: x,
-                y: y,
-            };
+            const newShape = { id: `${selectedShapeTool}-${Date.now()}`, type: selectedShapeTool, x, y };
             setShapesOnCanvas(prevShapes => [...prevShapes, newShape]);
         }
     }, [selectedShapeTool]);
 
     const addShapeFromDrop = useCallback((shapeType, x, y) => {
         if (shapeType) {
-            const newShape = {
-                id: `${shapeType}-${Date.now()}`,
-                type: shapeType,
-                x: x,
-                y: y,
-            };
+            const newShape = { id: `${shapeType}-${Date.now()}`, type: shapeType, x, y };
             setShapesOnCanvas(prevShapes => [...prevShapes, newShape]);
         }
     }, []);
@@ -49,25 +38,51 @@ export const AppProvider = ({ children }) => {
         setShapesOnCanvas(prevShapes => prevShapes.filter(shape => shape.id !== shapeId));
     }, []);
 
-    const handleSave = useCallback(() => {
-        const dataToSave = {
-            drawingName: drawingName,
-            shapes: shapesOnCanvas,
-        };
+    // ADDED: Login handler
+    const handleLogin = useCallback(async (username) => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/users/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username }),
+            });
 
-        fetch(`${API_BASE_URL}/drawings/${CURRENT_USER_ID}`, {
+            if (!response.ok) {
+                throw new Error('Login failed');
+            }
+            const user = await response.json();
+            setCurrentUser(user); // Set the logged-in user
+            setDrawingName(`${user.username}'s Drawing`); // Set a default drawing name for the user
+            setShapesOnCanvas([]); // Clear canvas for the new user
+            return true;
+        } catch (error) {
+            console.error('Login error:', error);
+            return false;
+        }
+    }, []);
+
+    // ADDED: Logout handler
+    const handleLogout = useCallback(() => {
+        setCurrentUser(null);
+        setShapesOnCanvas([]);
+        setDrawingName('Untitled Drawing');
+        setSelectedShapeTool(null);
+    }, []);
+
+    // MODIFIED: handleSave now uses the logged-in user's ID
+    const handleSave = useCallback(() => {
+        if (!currentUser) {
+            alert('You must be logged in to save.');
+            return;
+        }
+        const dataToSave = { drawingName, shapes: shapesOnCanvas };
+
+        fetch(`${API_BASE_URL}/drawings/${currentUser.id}`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(dataToSave),
         })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
+            .then(response => response.ok ? response.json() : Promise.reject('Save failed'))
             .then(savedData => {
                 console.log('Drawing saved successfully:', savedData);
                 alert('Drawing saved to server!');
@@ -76,25 +91,27 @@ export const AppProvider = ({ children }) => {
                 console.error('Error saving drawing:', error);
                 alert('Error saving drawing: ' + error.message);
             });
-    }, [drawingName, shapesOnCanvas]);
+    }, [drawingName, shapesOnCanvas, currentUser]);
 
-    // REPLACED: This function now fetches the drawing from the server.
+    // MODIFIED: handleFetch now uses the logged-in user's ID
     const handleFetch = useCallback(() => {
-        fetch(`${API_BASE_URL}/drawings/${CURRENT_USER_ID}`)
+        if (!currentUser) {
+            alert('You must be logged in to load a drawing.');
+            return;
+        }
+        fetch(`${API_BASE_URL}/drawings/${currentUser.id}`)
             .then(response => {
                 if (response.status === 404) {
                     alert('No saved drawing found for this user.');
                     return null;
                 }
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
+                if (!response.ok) throw new Error('Network response was not ok');
                 return response.json();
             })
             .then(data => {
-                if (data && data.drawingName && Array.isArray(data.shapes)) {
+                if (data) {
                     setDrawingName(data.drawingName);
-                    setShapesOnCanvas(data.shapes);
+                    setShapesOnCanvas(data.shapes || []);
                     alert('Drawing loaded from server!');
                 }
             })
@@ -102,8 +119,7 @@ export const AppProvider = ({ children }) => {
                 console.error('Error fetching drawing:', error);
                 alert('Error fetching drawing: ' + error.message);
             });
-    }, []);
-
+    }, [currentUser]);
 
     const contextValue = {
         drawingName,
@@ -115,13 +131,12 @@ export const AppProvider = ({ children }) => {
         addShapeToCanvasOnClick,
         addShapeFromDrop,
         removeShapeFromCanvas,
-        handleSave, // Use the new function
-        handleFetch, // Use the new function
+        handleSave,
+        handleFetch,
+        currentUser, // ADDED
+        handleLogin,  // ADDED
+        handleLogout, // ADDED
     };
 
-    return (
-        <AppContext.Provider value={contextValue}>
-            {children}
-        </AppContext.Provider>
-    );
+    return <AppContext.Provider value={contextValue}>{children}</AppContext.Provider>;
 };

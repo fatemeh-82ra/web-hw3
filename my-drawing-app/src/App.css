@@ -1,6 +1,9 @@
+/* Add these styles to your existing App.css file */
+
 body {
   margin: 0;
   font-family: sans-serif;
+  background-color: #f4f4f4; /* Add a light background to the body */
 }
 
 .app-container {
@@ -9,6 +12,7 @@ body {
   height: 100vh;
   border: 1px solid #ccc;
   box-sizing: border-box;
+  background-color: #fff;
 }
 
 .app-header {
@@ -18,6 +22,19 @@ body {
   padding: 10px 20px;
   border-bottom: 1px solid #ccc;
   background-color: #f0f0f0;
+}
+
+/* MODIFIED: Make header controls flex */
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ADDED: User info style */
+.user-info {
+  font-weight: bold;
+  margin-right: 15px;
 }
 
 .drawing-name-input {
@@ -31,16 +48,26 @@ body {
 
 .header-button {
   padding: 8px 15px;
-  margin-left: 10px;
   border: 1px solid #ccc;
   background-color: white;
   cursor: pointer;
   border-radius: 4px;
+  white-space: nowrap;
 }
 
 .header-button:hover {
   background-color: #e9e9e9;
 }
+
+/* ADDED: Logout button style */
+.logout-button {
+  background-color: #fce4e4;
+  border-color: #f5c2c2;
+}
+.logout-button:hover {
+  background-color: #f8d3d3;
+}
+
 
 .main-content {
   display: flex;
@@ -66,9 +93,8 @@ body {
 
 
 .app-sidebar {
-  width: 150px; /* Adjust as needed */
+  width: 150px;
   padding: 20px;
-  /* border-left: 1px solid #ccc; /* REMOVED to prevent double border with canvas-area */
   background-color: #f9f9f9;
   display: flex;
   flex-direction: column;
@@ -156,4 +182,69 @@ body {
 .canvas-area.drag-over {
   border: 2px dashed #007bff;
   background-color: #f0f8ff;
+}
+
+/* --- ADDED: Login Page Styles --- */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+  background-color: #f0f2f5;
+}
+
+.login-form {
+  padding: 40px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 320px;
+}
+
+.login-form h2 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.login-form p {
+  margin-bottom: 25px;
+  color: #666;
+}
+
+.login-form .form-group {
+  margin-bottom: 20px;
+}
+
+.login-form input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 1em;
+}
+
+.login-form button {
+  width: 100%;
+  padding: 12px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1.1em;
+  font-weight: bold;
+}
+
+.login-form button:hover {
+  background-color: #0056b3;
+}
+
+.login-error {
+  color: #d93025;
+  margin-top: 15px;
+  font-size: 0.9em;
 }

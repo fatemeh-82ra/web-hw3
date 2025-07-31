@@ -3,51 +3,42 @@ import { AppContext } from '../context/AppContext';
 
 function Login() {
     const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
     const { handleLogin } = useContext(AppContext);
+    const [error, setError] = useState('');
 
-    const submitLogin = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
-        handleLogin(username, password).catch(err => {
-            setError('Invalid username or password.');
-        });
+        if (!username) {
+            setError('Username cannot be empty.');
+            return;
+        }
+        const success = await handleLogin(username);
+        if (!success) {
+            setError("Login failed. Please use 'user1' or 'user2'.");
+        }
     };
 
     return (
         <div className="login-container">
-            <form onSubmit={submitLogin}>
-                <h2>Login</h2>
-                {error && <p className="error">{error}</p>}
-                <div>
-                    <label htmlFor="username">Username</label>
+            <form className="login-form" onSubmit={handleSubmit}>
+                <h2>Drawing App Login</h2>
+                <p>Default users are 'user1' and 'user2'</p>
+                <div className="form-group">
                     <input
                         type="text"
                         id="username"
+                        placeholder="Enter username"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
-                        required
-                    />
-                </div>
-                <div>
-                    <label htmlFor="password">Password</label>
-                    <input
-                        type="password"
-                        id="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
+                        autoFocus
                     />
                 </div>
                 <button type="submit">Login</button>
+                {error && <p className="login-error">{error}</p>}
             </form>
         </div>
     );
 }
-
-// Add some basic styling in App.css
-// .login-container { display: flex; justify-content: center; align-items: center; height: 100vh; }
-// form { padding: 2rem; border: 1px solid #ccc; border-radius: 8px; }
 
 export default Login;
