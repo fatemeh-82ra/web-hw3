@@ -7,6 +7,10 @@ export const AppProvider = ({ children }) => {
     const [selectedShapeTool, setSelectedShapeTool] = useState(null);
     const [shapesOnCanvas, setShapesOnCanvas] = useState([]);
 
+
+    const CURRENT_USER_ID = 1;
+    const API_BASE_URL = 'http://localhost:8080/api';
+
     const shapeCounts = useMemo(() => {
         const counts = { circle: 0, square: 0, triangle: 0 };
         shapesOnCanvas.forEach(shape => {
@@ -45,44 +49,61 @@ export const AppProvider = ({ children }) => {
         setShapesOnCanvas(prevShapes => prevShapes.filter(shape => shape.id !== shapeId));
     }, []);
 
-    const handleExport = useCallback(() => {
-        const dataToExport = {
+    const handleSave = useCallback(() => {
+        const dataToSave = {
             drawingName: drawingName,
             shapes: shapesOnCanvas,
         };
-        const jsonString = `data:text/json;charset=utf-8,${encodeURIComponent(
-            JSON.stringify(dataToExport)
-        )}`;
-        const link = document.createElement('a');
-        link.href = jsonString;
-        link.download = `${drawingName.replace(/\s+/g, '_') || 'drawing'}.json`;
-        link.click();
-        link.remove();
+
+        fetch(`${API_BASE_URL}/drawings/${CURRENT_USER_ID}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(dataToSave),
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(savedData => {
+                console.log('Drawing saved successfully:', savedData);
+                alert('Drawing saved to server!');
+            })
+            .catch(error => {
+                console.error('Error saving drawing:', error);
+                alert('Error saving drawing: ' + error.message);
+            });
     }, [drawingName, shapesOnCanvas]);
 
-    const handleImport = useCallback((event) => {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                try {
-                    const importedData = JSON.parse(e.target.result);
-                    if (importedData.drawingName && Array.isArray(importedData.shapes)) {
-                        setDrawingName(importedData.drawingName);
-                        setShapesOnCanvas(importedData.shapes);
-                    } else {
-                        alert('Invalid JSON file format.');
-                    }
-                } catch (error) {
-                    alert('Error parsing JSON file: ' + error.message);
+    // REPLACED: This function now fetches the drawing from the server.
+    const handleFetch = useCallback(() => {
+        fetch(`${API_BASE_URL}/drawings/${CURRENT_USER_ID}`)
+            .then(response => {
+                if (response.status === 404) {
+                    alert('No saved drawing found for this user.');
+                    return null;
                 }
-            };
-            reader.readAsText(file);
-            if (event.target) {
-                event.target.value = null; // Reset file input
-            }
-        }
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data && data.drawingName && Array.isArray(data.shapes)) {
+                    setDrawingName(data.drawingName);
+                    setShapesOnCanvas(data.shapes);
+                    alert('Drawing loaded from server!');
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching drawing:', error);
+                alert('Error fetching drawing: ' + error.message);
+            });
     }, []);
+
 
     const contextValue = {
         drawingName,
@@ -94,8 +115,8 @@ export const AppProvider = ({ children }) => {
         addShapeToCanvasOnClick,
         addShapeFromDrop,
         removeShapeFromCanvas,
-        handleExport,
-        handleImport,
+        handleSave, // Use the new function
+        handleFetch, // Use the new function
     };
 
     return (

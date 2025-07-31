@@ -1,12 +1,9 @@
-import React, { useContext, useRef } from 'react';
-import {AppContext} from "../context/AppContext";
-function Header() {
-    const { drawingName, setDrawingName, handleExport, handleImport } = useContext(AppContext);
-    const fileInputRef = useRef(null);
+import React, { useContext } from 'react';
+import { AppContext } from "../context/AppContext";
 
-    const handleImportClick = () => {
-        fileInputRef.current.click();
-    };
+function Header() {
+    // Note we removed fileInputRef and handleImportClick
+    const { drawingName, setDrawingName, handleSave, handleFetch } = useContext(AppContext);
 
     return (
         <header className="app-header">
@@ -18,15 +15,9 @@ function Header() {
                 className="drawing-name-input"
             />
             <div>
-                <button onClick={handleExport} className="header-button">Export</button>
-                <button onClick={handleImportClick} className="header-button">Import</button>
-                <input
-                    type="file"
-                    ref={fileInputRef}
-                    onChange={handleImport}
-                    accept=".json"
-                    style={{ display: 'none' }}
-                />
+                {/* Updated buttons */}
+                <button onClick={handleSave} className="header-button">Save to Server</button>
+                <button onClick={handleFetch} className="header-button">Load from Server</button>
             </div>
         </header>
     );
