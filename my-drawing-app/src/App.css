@@ -1,0 +1,159 @@
+body {
+  margin: 0;
+  font-family: sans-serif;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  border-bottom: 1px solid #ccc;
+  background-color: #f0f0f0;
+}
+
+.drawing-name-input {
+  padding: 8px;
+  font-size: 1em;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-right: 20px;
+  flex-grow: 1;
+}
+
+.header-button {
+  padding: 8px 15px;
+  margin-left: 10px;
+  border: 1px solid #ccc;
+  background-color: white;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.header-button:hover {
+  background-color: #e9e9e9;
+}
+
+.main-content {
+  display: flex;
+  flex-grow: 1;
+  overflow: hidden;
+}
+
+.canvas-area {
+  flex-grow: 1;
+  border-right: 1px solid #ccc;
+  position: relative;
+  background-color: #fff;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.canvas-placeholder {
+  color: #aaa;
+  font-size: 1.5em;
+}
+
+
+.app-sidebar {
+  width: 150px; /* Adjust as needed */
+  padding: 20px;
+  /* border-left: 1px solid #ccc; /* REMOVED to prevent double border with canvas-area */
+  background-color: #f9f9f9;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+
+.app-sidebar h3 {
+  margin-top: 0;
+  text-align: center;
+}
+
+.shape-tool {
+  margin-bottom: 15px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: center;
+  width: 80px;
+  background-color: white;
+}
+
+.shape-tool.selected {
+  background-color: #cfe2ff;
+  border-color: #99bffd;
+}
+
+.shape-tool:hover {
+  background-color: #efefef;
+}
+
+.tool-icon {
+  width: 50px;
+  height: 50px;
+  margin: 0 auto 5px auto;
+  border: 1px solid black;
+}
+
+.circle-icon {
+  border-radius: 50%;
+  background-color: lightblue;
+}
+
+.square-icon {
+  background-color: lightgreen;
+}
+
+.triangle-icon {
+  width: 0;
+  height: 0;
+  border: 0;
+  border-left: 25px solid transparent;
+  border-right: 25px solid transparent;
+  border-bottom: 50px solid lightcoral;
+  background-color: transparent;
+}
+
+
+.app-footer {
+  padding: 10px 20px;
+  border-top: 1px solid #ccc;
+  background-color: #f0f0f0;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.app-footer span {
+  margin: 0 10px;
+  padding: 5px 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: white;
+}
+
+.shape-tool[draggable="true"] {
+  cursor: grab;
+}
+
+.shape-tool[draggable="true"]:active {
+  cursor: grabbing;
+}
+
+.canvas-area.drag-over {
+  border: 2px dashed #007bff;
+  background-color: #f0f8ff;
+}
