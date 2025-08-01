@@ -61,7 +61,6 @@ export const AppProvider = ({ children }) => {
         }
     }, []);
 
-    // ADDED: Logout handler
     const handleLogout = useCallback(() => {
         setCurrentUser(null);
         setShapesOnCanvas([]);
@@ -69,7 +68,6 @@ export const AppProvider = ({ children }) => {
         setSelectedShapeTool(null);
     }, []);
 
-    // MODIFIED: handleSave now uses the logged-in user's ID
     const handleSave = useCallback(() => {
         if (!currentUser) {
             alert('You must be logged in to save.');
@@ -93,7 +91,6 @@ export const AppProvider = ({ children }) => {
             });
     }, [drawingName, shapesOnCanvas, currentUser]);
 
-    // MODIFIED: handleFetch now uses the logged-in user's ID
     const handleFetch = useCallback(() => {
         if (!currentUser) {
             alert('You must be logged in to load a drawing.');
@@ -133,9 +130,9 @@ export const AppProvider = ({ children }) => {
         removeShapeFromCanvas,
         handleSave,
         handleFetch,
-        currentUser, // ADDED
-        handleLogin,  // ADDED
-        handleLogout, // ADDED
+        currentUser,
+        handleLogin,
+        handleLogout,
     };
 
     return <AppContext.Provider value={contextValue}>{children}</AppContext.Provider>;

@@ -8,6 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-    // ADDED: Custom query to find a user by their username for login
     Optional<User> findByUsername(String username);
 }

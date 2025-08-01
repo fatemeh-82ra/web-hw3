@@ -3,11 +3,10 @@ import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import Canvas from './components/Canvas';
 import Footer from './components/Footer';
-import Login from './components/Login'; // Import the new Login component
+import Login from './components/Login';
 import { AppProvider, AppContext } from "./context/AppContext";
 import './App.css';
 
-// This new component decides what to render based on auth state
 function AppContent() {
     const { currentUser } = useContext(AppContext);
 

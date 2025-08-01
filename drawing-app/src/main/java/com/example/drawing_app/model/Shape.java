@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Shape {
     @Id
-    // We use the shape's ID from the frontend, so no @GeneratedValue
     private String id;
 
     private String type;
@@ -19,6 +18,6 @@ public class Shape {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "drawing_id")
-    @JsonIgnore // Prevents infinite loops during JSON serialization
+    @JsonIgnore
     private Drawing drawing;
 }

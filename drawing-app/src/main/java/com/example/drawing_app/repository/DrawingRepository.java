@@ -7,6 +7,5 @@ import java.util.Optional;
 
 @Repository
 public interface DrawingRepository extends JpaRepository<Drawing, Long> {
-    // Custom query to find a drawing by the user's ID
     Optional<Drawing> findByUserId(Long userId);
 }

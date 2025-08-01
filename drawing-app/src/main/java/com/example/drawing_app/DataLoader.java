@@ -14,7 +14,6 @@ public class DataLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        // Create default users if they don't exist
         if (userRepository.count() == 0) {
             userRepository.save(new User("user1"));
             userRepository.save(new User("user2"));

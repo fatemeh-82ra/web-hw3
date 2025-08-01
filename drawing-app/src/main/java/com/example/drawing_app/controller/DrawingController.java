@@ -23,7 +23,6 @@ public class DrawingController {
     @Autowired
     private UserRepository userRepository;
 
-    // ADDED: Endpoint to handle user login
     @PostMapping("/users/login")
     public ResponseEntity<User> login(@RequestBody Map<String, String> credentials) {
         String username = credentials.get("username");

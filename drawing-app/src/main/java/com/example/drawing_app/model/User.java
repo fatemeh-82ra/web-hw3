@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "users") // Explicitly name the table 'users'
+@Table(name = "users")
 @Data
 @NoArgsConstructor
 public class User {
