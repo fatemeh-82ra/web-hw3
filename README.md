@@ -105,8 +105,9 @@
   * **ایجاد پایگاه داده:** کلاینت MySQL را باز کردیم و یک پایگاه داده جدید برای اپلیکیشن ایجاد کردیم.
     ```sql
     CREATE DATABASE drawing_app_db;
-    <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/2582c78e-21b6-44c8-9651-b86cfb102c20" />
     ```
+    <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/fbefd793-9f78-4d59-91ef-9ec73b1b7041" />
+
   * **پیکربندی اطلاعات اتصال:** به پوشه پروژه بک‌اند (`drawing-app/`) می‌رویم و فایل `src/main/resources/application.properties` را باز می‌کنیم. URL پایگاه داده، نام کاربری و رمز عبور را با اطلاعات اتصال MySQL خود به‌روزرسانی می‌کنیم.
   * **اجرای سرور:** یک ترمینال در دابرکتوری پروژه بک‌اند (`drawing-app/`) باز کرده و دستور زیر را اجرا می‌کنیم:
     ```bash
